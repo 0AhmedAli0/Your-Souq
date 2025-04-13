@@ -1,3 +1,25 @@
+@use "@angular/material" as mat; //يستورد مكتبة Angular Material ويعطيها اسم مختصر mat للاستخدام اللاحق.
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+$customTheme: mat.define-theme();
+//ينشئ سمة مخصصة جديدة باستخدام الدالة define-theme() من Angular Material.
+
+@include mat.core();
+//يطبق الأنماط الأساسية المطلوبة لجميع مكونات Angular Material.
+
+.custom-theme {
+  @include mat.all-component-themes(
+    $customTheme
+  ); //يطبق السمة المخصصة على جميع مكونات Angular Material داخل العناصر التي تحمل class custom-theme.
+
+  //override the button styles
+  .mdc-button,
+  .mdc-raised-button,
+  .mdc-stroked-button,
+  .mdc-flat-button {
+    @apply rounded-md; // يستخدم فائدة Tailwind CSS rounded-md لجعل زوايا الزر دائرية بمقدار متوسط.
+  }
+}

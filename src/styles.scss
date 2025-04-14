@@ -23,3 +23,7 @@ $customTheme: mat.define-theme();
     @apply rounded-md; // يستخدم فائدة Tailwind CSS rounded-md لجعل زوايا الزر دائرية بمقدار متوسط.
   }
 }
+
+.container {
+  @apply px-6 max-w-screen-2xl;
+}

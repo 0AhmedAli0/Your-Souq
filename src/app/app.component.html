@@ -1,4 +1,16 @@
 <app-header></app-header>
 
+<div class="container mt-6">
+  <h2 class="text-3xl font-bold underline bg-slate-500">
+    welcome to {{ title }}
+  </h2>
 
-<h1 class="text-3xl font-bold underline bg-slate-500">welcome to {{title}}</h1>
+  <ul>
+    @for (product of products; track product.id) {
+    <!-- تحتاج الي بعض معلومه التتبع لكل منتج تدور حوله
+        تحتاج إلى تحديد track (عادةً بـ id) لتحسين تحديثات الـ DOM
+    -->
+    <li>{{ product.name }}</li>
+    }
+  </ul>
+</div>

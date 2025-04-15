@@ -21,6 +21,8 @@ $customTheme: mat.define-theme();
   .mdc-stroked-button,
   .mdc-flat-button {
     @apply rounded-md; // يستخدم فائدة Tailwind CSS rounded-md لجعل زوايا الزر دائرية بمقدار متوسط.
+    color: #f08804 !important;
+    // color: #74935a !important;
   }
 }
 

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Pagination } from '../../shared/models/pagination';
 import { product } from '../../shared/models/product';
@@ -14,10 +14,10 @@ export class ShopService {
   brands: string[] = [];
 
   getProducts() {
-    // return this.http.get<Pagination<product>>(this.baseUrl + 'Products');
-    return this.http.get<Pagination<product>>(
-      this.baseUrl + 'Products?PageSize=20'
-    );
+    let params = new HttpParams(); //this allow to us to build query string
+
+    return this.http.get<Pagination<product>>(this.baseUrl + 'Products');
+    // return this.http.get<Pagination<product>>(this.baseUrl + 'Products?PageSize=20');
   }
 
   getBrand() {

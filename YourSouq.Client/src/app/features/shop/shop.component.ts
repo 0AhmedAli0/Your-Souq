@@ -40,6 +40,7 @@ export class ShopComponent implements OnInit {
     const dialogRef = this.dialogService.open(FiltersDialogComponent, {
       minWidth: '500px',
       data: {
+        //علشان يبعت البيانات الي الديالوج علشان اعرضها فيه
         selectedBrands: this.selectedBrands,
         selectedTypes: this.selectedTypes,
       },
@@ -47,6 +48,7 @@ export class ShopComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe({
       next: (result) => {
+        //لو انا بعت حاجه في الديالوج احفظها في المتغيرات دي
         if (result) {
           console.log(result);
           this.selectedBrands = result.selectedBrands;

@@ -24,6 +24,13 @@ $customTheme: mat.define-theme();
     color: #f08804 !important;
     // color: #74935a !important;
   }
+  .mat-mdc-unelevated-button:not(:disabled) {
+    color: var(
+      --mdc-filled-button-label-text-color,
+      var(--mat-app-on-primary)
+    ) !important;
+    background-color: #f08804 !important;
+  }
 }
 
 .container {

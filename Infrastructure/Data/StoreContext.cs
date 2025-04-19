@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Entities;
+using Infrastructure.Config;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
@@ -12,5 +13,12 @@ namespace Infrastructure.Data
     {
 
         public DbSet<Product> Products { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductConfiguration).Assembly);
+        }
     }
 }

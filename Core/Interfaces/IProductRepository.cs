@@ -9,9 +9,11 @@ namespace Core.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IReadOnlyList<Product>> GetProductsAsync();
+        Task<IReadOnlyList<Product>> GetProductsAsync(string? brand, string? type, string? sort);
         Task<Product?> GetProductByIdAsync(int id);
-        void AddProduct(Product product);//will work sync because it doesnot connect to database
+        Task<IReadOnlyList<string>> GetBrandsAsync();
+        Task<IReadOnlyList<string>> GetTypesAsync();
+        void AddProduct(Product product);//will work syncronaze because it doesnot connect to database
         void UpdateProduct(Product product);
         void DeleteProduct(Product product);
         bool ProductExists(int id);

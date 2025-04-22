@@ -12,9 +12,9 @@ namespace API.Controllers
     public class ProductsController(IProductRepository _repository) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? brand, string? type, string? sort)
         {
-            return Ok(await _repository.GetProductsAsync());
+            return Ok(await _repository.GetProductsAsync(brand, type, sort));
         }
 
         [HttpGet("{id:int}")]
@@ -30,9 +30,12 @@ namespace API.Controllers
         {
             _repository.AddProduct(product);
 
-            await _repository.SaveChangesAsync();
+            if(await _repository.SaveChangesAsync())
+            {
+                CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+            }
 
-            return product;
+            return BadRequest("Probllem creating product");
         }
 
         [HttpPut("{id:int}")]
@@ -42,8 +45,11 @@ namespace API.Controllers
                 return BadRequest("Cannot update this product");
 
             _repository.UpdateProduct(product);
-            await _repository.SaveChangesAsync();
-            return NoContent();
+            if(await _repository.SaveChangesAsync())
+            {
+                return NoContent();
+            }
+            return BadRequest("Problem updating the product");
         }
 
         [HttpDelete("{id:int}")]
@@ -54,14 +60,29 @@ namespace API.Controllers
             if (product == null) return NotFound();
             
             _repository.DeleteProduct(product);
-            
-            await _repository.SaveChangesAsync();
-            return NoContent();
+
+            if (await _repository.SaveChangesAsync())
+            {
+                return NoContent();
+            }
+            return BadRequest("Problem deleting the product");
+        }
+
+        [HttpGet("brands")]
+        public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
+        {
+            return Ok(await _repository.GetBrandsAsync());
+        }
+
+        [HttpGet("types")]
+        public async Task<ActionResult<IReadOnlyList<string>>> Gettypes()
+        {
+            return Ok(await _repository.GetTypesAsync());
         }
 
         //private bool ProductExists(int id)
         //{
-        //    return context.Products.Any(x => x.Id == id);
+        //    return _repository.ProductExists(id);
         //}
     }
 }

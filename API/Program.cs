@@ -7,7 +7,7 @@ namespace API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +37,24 @@ namespace API
             app.UseHttpsRedirection();
 
             app.MapControllers();
+
+            //Update database and data seeding
+            try
+            {
+                using var Scope = app.Services.CreateScope();
+                var ScopeServices = Scope.ServiceProvider;
+                //Update database
+                var StoreContext = ScopeServices.GetRequiredService<StoreContext>();
+                await StoreContext.Database.MigrateAsync();
+
+                //data seeding
+                await StoreContextSeed.SeedAsync(StoreContext);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
 
             app.Run();
         }

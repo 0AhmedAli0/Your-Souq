@@ -9,8 +9,34 @@ using Core.Interfaces;
 
 namespace Core.Specifications
 {
-    public class BaseSpecification<T>(Expression<Func<T, bool>> Criteria) : ISpecification<T>
+    public class BaseSpecification<T>(Expression<Func<T, bool>>? Criteria) : ISpecification<T>
     {
-        public Expression<Func<T, bool>> WhereExpression => Criteria;
+        public BaseSpecification() : this(null) { }
+        public Expression<Func<T, bool>>? WhereExpression => Criteria;
+
+        public Expression<Func<T, object>>? OrderByExpression { get; private set; }
+
+        public Expression<Func<T, object>>? OrderByDescExpression { get; private set; }
+        public Expression<Func<T, string>>? AllTypesExpression { get; set; }
+
+        protected void AddOrderBy(Expression<Func<T, object>>? OrderBy)
+        {
+            OrderByExpression = OrderBy;
+        }
+        protected void AddOrderByDesc(Expression<Func<T, object>>? OrderByDesc)
+        {
+            OrderByDescExpression = OrderByDesc;
+        }
+    }
+
+    public class BaseSpecification<T, TResult>(Expression<Func<T, bool>>? Criteria)
+        : BaseSpecification<T>(Criteria), ISpecification<T, TResult>
+    {
+        public Expression<Func<T, TResult>>? SelectExpression {  get; private set; }
+
+        protected void AddSelect(Expression<Func<T, TResult>>? select)
+        {
+            SelectExpression = select;
+        }
     }
 }

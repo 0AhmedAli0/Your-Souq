@@ -14,10 +14,37 @@ namespace Infrastructure.Data
         {
             var query = inputQuery;
 
-            if(spec.WhereExpression != null)
-                query=query.Where(spec.WhereExpression);
+            if (spec.WhereExpression != null)
+                query = query.Where(spec.WhereExpression);
+
+            if (spec.OrderByExpression != null)
+                query = query.OrderBy(spec.OrderByExpression);
+
+            if (spec.OrderByDescExpression != null)
+                query = query.OrderByDescending(spec.OrderByDescExpression);
 
             return query;
+        }
+
+        public static IQueryable<TResult> GetQuery<TSpec,TResult>(IQueryable<T> inputQuery ,ISpecification<T, TResult> spec )
+        {
+            var query = inputQuery;
+
+            if (spec.WhereExpression != null)
+                query = query.Where(spec.WhereExpression);
+
+            if (spec.OrderByExpression != null)
+                query = query.OrderBy(spec.OrderByExpression);
+
+            if (spec.OrderByDescExpression != null)
+                query = query.OrderByDescending(spec.OrderByDescExpression);
+
+            var SelectQuery = query as IQueryable<TResult>;
+
+            if (spec.SelectExpression != null)
+             SelectQuery = query.Select(spec.SelectExpression);
+
+            return SelectQuery ?? query.Cast<TResult>();
         }
     }
 }

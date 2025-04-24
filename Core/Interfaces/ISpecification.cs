@@ -10,6 +10,14 @@ namespace Core.Interfaces
 {
     public interface ISpecification<T> 
     {
-        public Expression<Func<T,bool>> WhereExpression { get; }//Criteria
+        public Expression<Func<T,bool>>? WhereExpression { get; }//Criteria
+        public Expression<Func<T,object>>? OrderByExpression { get; }
+        public Expression<Func<T,object>>? OrderByDescExpression { get; }
+
+    }
+    public interface ISpecification<T, TResult> : ISpecification<T>
+    {
+        public Expression<Func<T, TResult>>? SelectExpression { get; }
+
     }
 }

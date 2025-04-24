@@ -15,9 +15,9 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? brand, string? type, string? sort)
         {
-            //return Ok(await _repository.GetProductsAsync(brand, type, sort));
-            var spec= new BaseSpecification<Product>(p=>p.Price>1);
-            return Ok(await _repository.GetAllAsync(spec));
+            var spec = new ProductSpecification(brand, type, sort);
+            return Ok(await _repository.ListAsync(spec));
+            //return Ok(await _repository.GetAllAsync());
         }
 
         [HttpGet("{id:int}")]

@@ -23,6 +23,9 @@ namespace Infrastructure.Data
             if (spec.OrderByDescExpression != null)
                 query = query.OrderByDescending(spec.OrderByDescExpression);
 
+            if (spec.IsDistinct)
+                query = query.Distinct();
+
             return query;
         }
 
@@ -43,6 +46,9 @@ namespace Infrastructure.Data
 
             if (spec.SelectExpression != null)
              SelectQuery = query.Select(spec.SelectExpression);
+
+            if (spec.IsDistinct)
+                SelectQuery = SelectQuery?.Distinct();
 
             return SelectQuery ?? query.Cast<TResult>();
         }

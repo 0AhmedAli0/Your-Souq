@@ -31,10 +31,5 @@ namespace Core.Specifications
 
         }
 
-
-        public ProductSpecification(string AllTypes)
-        {
-            AllTypesExpression = p => p.Type;  
-        }
     }
 }

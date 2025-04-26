@@ -13,6 +13,7 @@ namespace Core.Interfaces
         public Expression<Func<T,bool>>? WhereExpression { get; }//Criteria
         public Expression<Func<T,object>>? OrderByExpression { get; }
         public Expression<Func<T,object>>? OrderByDescExpression { get; }
+        bool IsDistinct { get; }
 
     }
     public interface ISpecification<T, TResult> : ISpecification<T>

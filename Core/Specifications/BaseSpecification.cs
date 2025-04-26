@@ -17,7 +17,8 @@ namespace Core.Specifications
         public Expression<Func<T, object>>? OrderByExpression { get; private set; }
 
         public Expression<Func<T, object>>? OrderByDescExpression { get; private set; }
-        public Expression<Func<T, string>>? AllTypesExpression { get; set; }
+
+        public bool IsDistinct { get; private set; }
 
         protected void AddOrderBy(Expression<Func<T, object>>? OrderBy)
         {
@@ -27,14 +28,22 @@ namespace Core.Specifications
         {
             OrderByDescExpression = OrderByDesc;
         }
+        protected void ApplyDistinct()
+        {
+            IsDistinct = true;
+        }
     }
 
     public class BaseSpecification<T, TResult>(Expression<Func<T, bool>>? Criteria)
         : BaseSpecification<T>(Criteria), ISpecification<T, TResult>
     {
+        public BaseSpecification() : this(null)
+        {
+            
+        }
         public Expression<Func<T, TResult>>? SelectExpression {  get; private set; }
 
-        protected void AddSelect(Expression<Func<T, TResult>>? select)
+        protected void AddSelect(Expression<Func<T, TResult>> select)
         {
             SelectExpression = select;
         }

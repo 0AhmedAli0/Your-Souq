@@ -11,11 +11,13 @@ namespace Core.Specifications
 {
     public class ProductSpecification : BaseSpecification<Product>
     {
-        public ProductSpecification(string? brand, string? type, string? sort) : base(x =>
-            (string.IsNullOrWhiteSpace(brand) || x.Brand == brand) &&
-            (string.IsNullOrWhiteSpace(type) || x.Type == type))
+        public ProductSpecification(ProductSpecParameters specParameters) : base(x =>
+            (!specParameters.brands.Any() || specParameters.brands.Contains(x.Brand)) &&
+            (!specParameters.types.Any() || specParameters.types.Contains(x.Type)))
         {
-            switch (sort)
+            ApplyPaging(specParameters.pageSize * (specParameters.pageIndex - 1), specParameters.pageSize);
+
+            switch (specParameters.Sort)
             {
                 case "priceAsc":
                     AddOrderBy(x => x.Price);
@@ -27,7 +29,6 @@ namespace Core.Specifications
                     AddOrderBy(x => x.Name);
                     break;
             }
-
 
         }
 

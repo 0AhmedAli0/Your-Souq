@@ -14,14 +14,12 @@ namespace Core.Interfaces
         Task<T?> GetEntityWithSpec(ISpecification<T> spec);
         Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);//list all product with specification
         Task<TResult?> GetEntityWithSpec<TResult>(ISpecification<T, TResult> spec);
-        Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T, TResult> spec);
-
-        //Task<IReadOnlyList<string>> GetBrandsAsync();
-        //Task<IReadOnlyList<string>> GetTypesAsync();
+        Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T, TResult> spec);//to get all brands and types
         void Add(T Entity);
         void Update(T Entity);
         void Remove(T Entity);
         bool Exists(int id);
         Task<bool> SaveChangesAsync();
+        Task<int> CountAsync(ISpecification<T> spec);
     }
 }

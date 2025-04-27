@@ -8,7 +8,19 @@ namespace Core.Specifications
 {
     public class ProductSpecParameters
     {
-		private List<string> Brands;
+		private const int MaxPageSize = 50;
+		public int pageIndex { get; set; } = 1;
+
+		private int PageSize = 6;
+
+		public int pageSize
+        {
+			get => PageSize;
+			set => PageSize = (value > MaxPageSize) ? MaxPageSize : value;
+		}
+
+
+		private List<string> Brands = [];
 
 		public List<string> brands
 		{
@@ -19,6 +31,19 @@ namespace Core.Specifications
 				//set { Brands = value.ToString().Split(',').ToList(); }
 			}
 		}
+		
+		private List<string> Types = [];
 
-	}
+		public List<string> types
+		{
+			get => Types;
+			set 
+			{ 
+				Types = value.SelectMany(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)).ToList();
+			}
+		}
+
+        public string? Sort { get; set; }
+
+    }
 }

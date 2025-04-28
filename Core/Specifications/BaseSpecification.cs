@@ -30,6 +30,7 @@ namespace Core.Specifications
         {
             if (Criteria != null)
                 query = query.Where(Criteria);
+
             return query;
         }
 

@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using API.RequestHelpers;
+using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Infrastructure.Data;
@@ -8,16 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductsController(IGenericRepository<Product> _repository) : ControllerBase
+    public class ProductsController(IGenericRepository<Product> _repository) : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecParameters specParameters)
+        public async Task<ActionResult<IReadOnlyList<Pagination<Product>>>> GetProducts([FromQuery]ProductSpecParameters specParameters)
         {
             var spec = new ProductSpecification(specParameters);
-            return Ok(await _repository.ListAsync(spec));
-            //return Ok(await _repository.GetAllAsync());
+            //var products = await _repository.ListAsync(spec);
+            //var count = await _repository.CountAsync(spec);
+            //return Ok(new Pagination<Product>(specParameters.pageIndex, specParameters.pageSize, count, products));
+            return await CreatePagedResult(_repository, spec, specParameters.pageIndex, specParameters.pageSize);
         }
 
         [HttpGet("{id:int}")]
@@ -89,9 +90,6 @@ namespace API.Controllers
             return Ok(await _repository.ListAsync(spec));
         }
 
-        //private bool ProductExists(int id)
-        //{
-        //    return _repository.ProductExists(id);
-        //}
+
     }
 }

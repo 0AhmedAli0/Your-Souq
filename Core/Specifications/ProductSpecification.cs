@@ -13,7 +13,9 @@ namespace Core.Specifications
     {
         public ProductSpecification(ProductSpecParameters specParameters) : base(x =>
             (!specParameters.brands.Any() || specParameters.brands.Contains(x.Brand)) &&
-            (!specParameters.types.Any() || specParameters.types.Contains(x.Type)))
+            (!specParameters.types.Any() || specParameters.types.Contains(x.Type)) &&
+            (string.IsNullOrEmpty(specParameters.Search) || x.Name.ToLower().Contains(specParameters.Search))
+        )
         {
             ApplyPaging(specParameters.pageSize * (specParameters.pageIndex - 1), specParameters.pageSize);
 

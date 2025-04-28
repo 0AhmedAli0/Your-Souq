@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
@@ -14,6 +15,11 @@ namespace Infrastructure.Data
         public void Add(T Entity)
         {
             _context.Set<T>().Add(Entity);
+        }
+
+        public async Task<int> CountAsync(ISpecification<T> spec)
+        {
+            return await spec.ApplyCriteria(_context.Set<T>().AsQueryable()).CountAsync();
         }
 
         public bool Exists(int id)

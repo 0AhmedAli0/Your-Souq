@@ -1,4 +1,5 @@
 
+using API.Middleware;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,25 @@ namespace API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddCors(options =>//to make angular project pupllished on another domain(origin) to call this project
+            {
+                //«÷«›Â ”Ì«”Â  ⁄«„·
+                options.AddPolicy("CorsPolicy", options =>
+                {
+                    //options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    options.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200", "http://localhost:4200");//·Ê ⁄«Ì“ «Õœœ „‘—Ê⁄ „⁄Ì‰ «·Ì „”„ÊÕ«Â Ìﬂ·„ «·‘—Ê⁄ » «⁄Ì
+                });
+            });
+
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -37,7 +51,10 @@ namespace API
 
             app.UseHttpsRedirection();
 
+            app.UseCors("CorsPolicy");//this middelWare will check if request comes from "https://localhost:4200"or"https://localhost:5100" if ok then requst pass if not request will refused
+            
             app.MapControllers();
+
 
             //Update database and data seeding
             try

@@ -7,23 +7,30 @@ import { product } from '../../shared/models/product';
   providedIn: 'root',
 })
 export class ShopService {
-  baseUrl = 'https://localhost:7196/api/';
-  // constructor(private _HttpClient: HttpClient) {} // old inject
+  baseUrl = 'https://localhost:5001/api/';
   private http = inject(HttpClient);
   types: string[] = [];
   brands: string[] = [];
 
-  getProducts() {
+  getProducts(brands?: string[], types?: string[]) {
     let params = new HttpParams(); //this allow to us to build query string
 
-    return this.http.get<Pagination<product>>(this.baseUrl + 'Products');
-    // return this.http.get<Pagination<product>>(this.baseUrl + 'Products?PageSize=20');
+    if (brands && brands.length > 0)
+      params = params.append('brands', brands.join(','));
+
+    if (types && types.length > 0)
+      params = params.append('types', types.join(','));
+
+    params = params.append('pageSize', 20);
+    return this.http.get<Pagination<product>>(this.baseUrl + 'Products', {
+      params,
+    });
   }
 
-  getBrand() {
+  getBrands() {
     if (this.brands.length > 0) return; //will execute one time when application start
-    return this.http.get<any[]>(this.baseUrl + 'Products/Brands').subscribe({
-      next: (response) => (this.brands = response.map((obj) => obj.name)),
+    return this.http.get<string[]>(this.baseUrl + 'products/brands').subscribe({
+      next: (response) => (this.brands = response),
       error(err) {
         console.log('get brand error');
       },
@@ -32,8 +39,8 @@ export class ShopService {
 
   getTypes() {
     if (this.types.length > 0) return;
-    return this.http.get<any[]>(this.baseUrl + 'Products/Types').subscribe({
-      next: (response) => (this.types = response.map((obj) => obj.name)),
+    return this.http.get<string[]>(this.baseUrl + 'products/types').subscribe({
+      next: (response) => (this.types = response),
     });
   }
 }

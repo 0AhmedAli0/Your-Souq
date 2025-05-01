@@ -36,3 +36,11 @@ $customTheme: mat.define-theme();
 .container {
   @apply px-6 max-w-screen-2xl;
 }
+
+.text-primary {
+  color: #f08804 !important;
+}
+
+button.match-input-height {
+  height: var(--mat-form-field-container-height) !important;
+}

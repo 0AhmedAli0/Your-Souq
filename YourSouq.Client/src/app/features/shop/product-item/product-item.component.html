@@ -1,5 +1,9 @@
 @if (product) {
-<mat-card class="example-card" appearance="raised">
+<mat-card
+  [routerLink]="['/shop', product.id]"
+  class="product-card"
+  appearance="raised"
+>
   <img
     mat-card-image
     src="{{ product.pictureUrl }}"

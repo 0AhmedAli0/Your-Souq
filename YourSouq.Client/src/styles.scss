@@ -44,3 +44,24 @@ $customTheme: mat.define-theme();
 button.match-input-height {
   height: var(--mat-form-field-container-height) !important;
 }
+
+.mdc-notched-outline__notch {
+  border-right-style: none !important;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused
+  .mdc-floating-label {
+  color: #f08804 !important;
+}
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: #f08804 !important;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused
+  .mat-mdc-notch-piece {
+  border-color: #f08804 !important;
+}
+.mdc-text-field--outlined:not(.mdc-text-field--disabled)
+  .mdc-text-field__input {
+  caret-color: #f08804 !important;
+}

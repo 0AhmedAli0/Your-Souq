@@ -36,6 +36,10 @@ export class ShopService {
     });
   }
 
+  getProduct(id: number) {
+    return this.http.get<product>(this.baseUrl + 'products/' + id);
+  }
+
   getBrands() {
     if (this.brands.length > 0) return; //will execute one time when application start
     return this.http.get<string[]>(this.baseUrl + 'products/brands').subscribe({

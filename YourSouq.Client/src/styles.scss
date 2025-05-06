@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 $customTheme: mat.define-theme();
-//ينشئ سمة مخصصة جديدة باستخدام الدالة define-theme() من Angular Material.
+//ينشئ سمة مخصصة جديدة باستخدام الدالة define-theme من Angular Material.
 
 @include mat.core();
 //يطبق الأنماط الأساسية المطلوبة لجميع مكونات Angular Material.
@@ -64,4 +64,20 @@ button.match-input-height {
 .mdc-text-field--outlined:not(.mdc-text-field--disabled)
   .mdc-text-field__input {
   caret-color: #f08804 !important;
+}
+
+.mat-mdc-snack-bar-container.snackbar-error {
+  --mdc-snackbar-container-color: red;
+  --mat-snack-bar-button-color: #fff !important;
+  --mdc-snackbar-supporting-text-color: #fff;
+}
+
+.mat-mdc-snack-bar-container.snackbar-success {
+  --mdc-snackbar-container-color: green;
+  --mdc-snack-bar-button-color: #fff;
+  --mdc-snackbar-supporting-text-color: #fff;
+}
+
+.mat-mdc-snack-bar-container .mdc-button__label {
+  color: #fff !important;
 }

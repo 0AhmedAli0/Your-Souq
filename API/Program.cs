@@ -2,7 +2,9 @@
 using API.Middleware;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace API
 {
@@ -24,6 +26,14 @@ namespace API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
+            {
+                var connection = builder.Configuration.GetConnectionString("Redis") ?? throw new Exception("cannot get redis connection string");
+                var configuration = ConfigurationOptions.Parse(connection);
+                return ConnectionMultiplexer.Connect(configuration);
+            });
+            builder.Services.AddSingleton<ICartService, CartService>();
+
             builder.Services.AddCors(options =>//to make angular project pupllished on another domain(origin) to call this project
             {
                 //«÷«›Â ”Ì«”Â  ⁄«„·
@@ -36,6 +46,7 @@ namespace API
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 
             var app = builder.Build();
 

@@ -81,3 +81,7 @@ button.match-input-height {
 .mat-mdc-snack-bar-container .mdc-button__label {
   color: #fff !important;
 }
+
+.mdc-linear-progress__bar-inner {
+  --mdc-linear-progress-active-indicator-color: #f08804 !important;
+}

@@ -18,5 +18,11 @@ namespace API.Dtos
         public string Brand { get; set; } = string.Empty;
         [Range (1, int.MaxValue, ErrorMessage = "Quantity In Stock must be at least 1")]
         public int QuantityInStock { get; set; }
+
+        public CreateProductDto()
+        {
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.WriteLine(QuantityInStock);
+        }
     }
 }

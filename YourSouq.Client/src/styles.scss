@@ -16,7 +16,7 @@ $customTheme: mat.define-theme();
   ); //يطبق السمة المخصصة على جميع مكونات Angular Material داخل العناصر التي تحمل class custom-theme.
 
   //override the button styles
-  .mdc-button,
+  .mdc-button:not(.mat-warn),
   .mdc-raised-button,
   .mdc-stroked-button,
   .mdc-flat-button {

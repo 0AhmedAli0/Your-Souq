@@ -21,14 +21,14 @@ export class CartItemComponent {
     this.cartService.addItemToCart(this.item());
   }
 
-  // decrementQuantity() {
-  //   this.cartService.removeItemFromCart(this.item().productId);
-  // }
+  decrementQuantity() {
+    this.cartService.removeItemFromCart(this.item().productId);
+  }
 
-  // removeItemFromCart() {
-  //   this.cartService.removeItemFromCart(
-  //     this.item().productId,
-  //     this.item().quantity
-  //   );
-  // }
+  removeItemFromCart() {
+    this.cartService.removeItemFromCart(
+      this.item().productId,
+      this.item().quantity
+    );
+  }
 }

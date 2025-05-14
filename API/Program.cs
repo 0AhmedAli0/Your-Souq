@@ -32,7 +32,6 @@ namespace API
                 var configuration = ConfigurationOptions.Parse(connection);
                 return ConnectionMultiplexer.Connect(configuration);
             });
-            builder.Services.AddSingleton<ICartService, CartService>();
 
             builder.Services.AddCors(options =>//to make angular project pupllished on another domain(origin) to call this project
             {
@@ -46,6 +45,9 @@ namespace API
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddSingleton<ICartService, CartService>();
+            builder.Services.AddAuthentication();
+            //builder.Services.AddIdentity
 
 
             var app = builder.Build();

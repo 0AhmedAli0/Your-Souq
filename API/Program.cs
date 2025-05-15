@@ -1,5 +1,6 @@
 
 using API.Middleware;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
@@ -35,11 +36,10 @@ namespace API
 
             builder.Services.AddCors(options =>//to make angular project pupllished on another domain(origin) to call this project
             {
-                //ÇÖÇÝå ÓíÇÓå ÊÚÇãá
                 options.AddPolicy("CorsPolicy", options =>
                 {
                     //options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-                    options.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200", "http://localhost:4200");//áæ ÚÇíÒ ÇÍÏÏ ãÔÑæÚ ãÚíä Çáí ãÓãæÍÇå íßáã ÇáÔÑæÚ ÈÊÇÚí
+                    options.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200", "http://localhost:4200");//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
                 });
             });
 
@@ -47,7 +47,8 @@ namespace API
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddSingleton<ICartService, CartService>();
             builder.Services.AddAuthentication();
-            //builder.Services.AddIdentity
+            builder.Services.AddIdentityApiEndpoints<AppUser>()
+                .AddEntityFrameworkStores<StoreContext>();
 
 
             var app = builder.Build();
@@ -67,7 +68,8 @@ namespace API
             app.UseCors("CorsPolicy");//this middelWare will check if request comes from "https://localhost:4200"or"https://localhost:5100" if ok then requst pass if not request will refused
             
             app.MapControllers();
-
+            app.MapGroup("api").MapIdentityApi<AppUser>();//Ù‡Ø°Ù‡ Ø§Ù„Ø¯Ø§Ù„Ø© ØªØ¶ÙŠÙ Ù…Ø¬Ù…ÙˆØ¹Ø© Ù…Ù† Ù†Ù‚Ø§Ø· Ø§Ù„Ù†Ù‡Ø§ÙŠØ© Ø§Ù„Ø¬Ø§Ù‡Ø²Ø© Ù„Ù„ØªØ¹Ø§Ù…Ù„ Ù…Ø¹ Ø¹Ù…Ù„ÙŠØ§Øª Ø§Ù„Ù…ØµØ§Ø¯Ù‚Ø© ÙˆØ¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ† 
+            //app.MapGroup("api") => result of this if we want to access the identity endpoints we should use this /api/account/register
 
             //Update database and data seeding
             try

@@ -14,6 +14,7 @@ namespace Infrastructure.Data
     {
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Address> Addresss { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

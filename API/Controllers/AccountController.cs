@@ -60,7 +60,7 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
 
     }
 
-    [HttpGet]
+    [HttpGet("auth-status")]
     public ActionResult GetAuthState()
     {//this endpoint tell us if user Is Authenticated
         return Ok(new { IsAuthenticated = User.Identity?.IsAuthenticated ?? false });

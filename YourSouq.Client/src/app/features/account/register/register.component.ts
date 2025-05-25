@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { JsonPipe } from '@angular/common';
+import { TextInputComponent } from '../../../shared/components/text-input/text-input.component';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -21,6 +22,7 @@ import { JsonPipe } from '@angular/common';
     MatButton,
     JsonPipe,
     MatError,
+    TextInputComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',

@@ -49,6 +49,7 @@ namespace API
             builder.Services.AddAuthentication();
             builder.Services.AddIdentityApiEndpoints<AppUser>()
                 .AddEntityFrameworkStores<StoreContext>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 
             var app = builder.Build();

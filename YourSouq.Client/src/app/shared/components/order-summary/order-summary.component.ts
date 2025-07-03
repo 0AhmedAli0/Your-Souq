@@ -28,4 +28,5 @@ import { FormsModule } from '@angular/forms';
 })
 export class OrderSummaryComponent {
   cartService = inject(CartService);
+  location = inject(Location);
 }

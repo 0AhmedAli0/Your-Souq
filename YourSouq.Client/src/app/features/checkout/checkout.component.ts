@@ -4,7 +4,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { StripeService } from '../../core/services/stripe.service';
-import { StripeAddressElement } from '@stripe/stripe-js';
+import { StripeAddressElement, StripePaymentElement } from '@stripe/stripe-js';
 import { SnackbarService } from '../../core/services/snackbar.service';
 import {
   MatCheckboxChange,
@@ -15,6 +15,9 @@ import { Address } from '../../shared/models/user';
 import { AccountService } from '../../core/services/account.service';
 import { firstValueFrom } from 'rxjs';
 import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery.component';
+import { CheckoutReviewComponent } from './checkout-review/checkout-review.component';
+import { CartService } from '../../core/services/cart.service';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-checkout',
@@ -26,21 +29,28 @@ import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery
     RouterLink,
     MatCheckboxModule,
     CheckoutDeliveryComponent,
+    CheckoutReviewComponent,
+    CurrencyPipe,
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
   private stripeService = inject(StripeService);
-  addressElement?: StripeAddressElement;
   private snackbar = inject(SnackbarService);
   private accountService = inject(AccountService);
+  cartService = inject(CartService);
+  addressElement?: StripeAddressElement;
+  paymentElement?: StripePaymentElement;
   saveAddress = false;
 
   async ngOnInit() {
     try {
       this.addressElement = await this.stripeService.createAddressElement();
       this.addressElement?.mount('#address-element'); // the address element to the DOM لتركيب
+
+      this.paymentElement = await this.stripeService.createPaymentElement();
+      this.paymentElement?.mount('#payment-element'); // the payment element to the DOM لتركيب
     } catch (error: any) {
       this.snackbar.error(error.message);
     }

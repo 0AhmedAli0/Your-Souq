@@ -1,10 +1,16 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { OrderSummaryComponent } from '../../shared/components/order-summary/order-summary.component';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatButton } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { StripeService } from '../../core/services/stripe.service';
-import { StripeAddressElement, StripePaymentElement } from '@stripe/stripe-js';
+import {
+  ConfirmationToken,
+  StripeAddressElement,
+  StripeAddressElementChangeEvent,
+  StripePaymentElement,
+  StripePaymentElementChangeEvent,
+} from '@stripe/stripe-js';
 import { SnackbarService } from '../../core/services/snackbar.service';
 import {
   MatCheckboxChange,
@@ -17,7 +23,7 @@ import { firstValueFrom } from 'rxjs';
 import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery.component';
 import { CheckoutReviewComponent } from './checkout-review/checkout-review.component';
 import { CartService } from '../../core/services/cart.service';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-checkout',
@@ -38,19 +44,72 @@ import { CurrencyPipe } from '@angular/common';
 export class CheckoutComponent implements OnInit, OnDestroy {
   private stripeService = inject(StripeService);
   private snackbar = inject(SnackbarService);
+  private router = inject(Router);
   private accountService = inject(AccountService);
   cartService = inject(CartService);
   addressElement?: StripeAddressElement;
   paymentElement?: StripePaymentElement;
   saveAddress = false;
+  completionStatus = signal<{
+    address: boolean;
+    card: boolean;
+    delivery: boolean;
+  }>({
+    address: false,
+    card: false,
+    delivery: false,
+    // delivery: this.cartService.cart()?.deliveryMethodId !== null,
+  });
+
+  ConfirmationToken?: ConfirmationToken; //لكي يتمكن المستخدم من الدفع في خطوه لا تحتوي علي عنصر الدفع
 
   async ngOnInit() {
     try {
       this.addressElement = await this.stripeService.createAddressElement();
       this.addressElement?.mount('#address-element'); // the address element to the DOM لتركيب
+      this.addressElement?.on('change', this.handelAddressChange);
 
       this.paymentElement = await this.stripeService.createPaymentElement();
       this.paymentElement?.mount('#payment-element'); // the payment element to the DOM لتركيب
+      this.paymentElement.on('change', this.handelPaymentChange);
+    } catch (error: any) {
+      this.snackbar.error(error.message);
+    }
+  }
+  handelPaymentChange = (event: StripePaymentElementChangeEvent) => {
+    this.completionStatus.update((state) => {
+      state.card = event.complete;
+      return state;
+    });
+  };
+
+  handelAddressChange = (event: StripeAddressElementChangeEvent) => {
+    //this sintax means that the function is binded to the class instance
+    this.completionStatus.update((state) => {
+      state.address = event.complete;
+      return state;
+    });
+  };
+
+  handelDeliveryChange(event: boolean) {
+    this.completionStatus.update((state) => {
+      state.delivery = event;
+      return state;
+    });
+  }
+
+  async getConfirmationToken() {
+    try {
+      if (
+        Object.values(this.completionStatus()).every(
+          (status) => status === true
+        )
+      ) {
+        const result = await this.stripeService.createConfirmationToken();
+        if (result.error) throw new Error(result.error.message);
+        this.ConfirmationToken = result.confirmationToken;
+        console.log('Confirmation Token:', this.ConfirmationToken);
+      }
     } catch (error: any) {
       this.snackbar.error(error.message);
     }
@@ -62,10 +121,35 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         const address = await this.getAddressFromStripeAddress();
         address && firstValueFrom(this.accountService.updateAddress(address));
       }
-    } else if (event.selectedIndex === 2) {
+    }
+    if (event.selectedIndex === 2) {
       await firstValueFrom(this.stripeService.createOrUpdatePaymentIntent());
     }
+    if (event.selectedIndex === 3) {
+      await this.getConfirmationToken();
+    }
   }
+
+  async confirmPayment(stepper: MatStepper) {
+    try {
+      if (this.ConfirmationToken) {
+        const result = await this.stripeService.confirmPayment(
+          this.ConfirmationToken
+        );
+        if (result.error) {
+          throw new Error(result.error.message || 'Error confirming payment');
+        } else {
+          this.cartService.deleteCart(); // Clear the cart after successful payment
+          this.cartService.selectedDelivery.set(null); // Clear the selected delivery method
+          this.router.navigateByUrl('/checkout/success'); // Navigate to success page
+        }
+      }
+    } catch (error: any) {
+      this.snackbar.error(error.message || 'Error confirming payment');
+      stepper.previous(); // Go back to the previous step if there's an error
+    }
+  }
+
   private async getAddressFromStripeAddress(): Promise<Address | null> {
     const result = await this.addressElement?.getValue();
     const address = result?.value.address;

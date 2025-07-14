@@ -2,6 +2,7 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { OrderSummaryComponent } from '../../shared/components/order-summary/order-summary.component';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatButton } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
 import { StripeService } from '../../core/services/stripe.service';
 import {
@@ -37,6 +38,7 @@ import { CurrencyPipe, JsonPipe } from '@angular/common';
     CheckoutDeliveryComponent,
     CheckoutReviewComponent,
     CurrencyPipe,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
@@ -62,6 +64,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   });
 
   ConfirmationToken?: ConfirmationToken; //لكي يتمكن المستخدم من الدفع في خطوه لا تحتوي علي عنصر الدفع
+  loading = false; // Flag to indicate loading state
 
   async ngOnInit() {
     try {
@@ -131,6 +134,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   async confirmPayment(stepper: MatStepper) {
+    this.loading = true; // Set loading state to true
     try {
       if (this.ConfirmationToken) {
         const result = await this.stripeService.confirmPayment(
@@ -147,6 +151,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     } catch (error: any) {
       this.snackbar.error(error.message || 'Error confirming payment');
       stepper.previous(); // Go back to the previous step if there's an error
+    } finally {
+      this.loading = false; // Reset loading state
     }
   }
 

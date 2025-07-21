@@ -13,8 +13,7 @@ using Stripe;
 namespace Infrastructure.Services
 {
     public class PaymentService(IConfiguration config,ICartService cartService,
-        IGenericRepository<DeliveryMethod> dmRepo,
-        IGenericRepository<Core.Entities.Product> productrepo) : IPaymentService
+        IUnitOfWork unitOfWork) : IPaymentService
     {
     
 
@@ -31,7 +30,7 @@ namespace Infrastructure.Services
             var shippingPrice = 0m;
             if (cart.DeliveryMethodId.HasValue)
             {
-                var deliveryMethod = await dmRepo.GetByIdAsync((int)cart.DeliveryMethodId);
+                var deliveryMethod = await unitOfWork.Repository<DeliveryMethod>().GetByIdAsync((int)cart.DeliveryMethodId);
                 if (deliveryMethod == null) return null;
                 shippingPrice = deliveryMethod.Price;
             }
@@ -39,7 +38,7 @@ namespace Infrastructure.Services
             //3-هنا بظبط السعر لو هو جايلي من الفرونت مش مظبوط
             foreach (var item in cart.Items)
             {
-                var product = await productrepo.GetByIdAsync(item.ProductId);
+                var product = await unitOfWork.Repository<Core.Entities.Product>().GetByIdAsync(item.ProductId);
                 if (product == null) return null; // If product not found, return null
                 if (item.Price != product.Price)
                 {

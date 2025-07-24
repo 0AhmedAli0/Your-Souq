@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
@@ -29,6 +30,12 @@ namespace Infrastructure.Data
             if (spec.IsPagingEnabled)
                 query = query.Skip(spec.Skip).Take(spec.Take);
 
+            if (spec.Includes != null && spec.Includes.Any())
+                query = spec.Includes.Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
+
+            if (spec.IncludeStrings != null && spec.IncludeStrings.Any()) { 
+                query = spec.IncludeStrings.Aggregate(query, (current, includeString) => current.Include(includeString));}
+            
             return query;
         }
 

@@ -13,6 +13,8 @@ namespace Core.Interfaces
         public Expression<Func<T,bool>>? WhereExpression { get; }//Criteria
         public Expression<Func<T,object>>? OrderByExpression { get; }
         public Expression<Func<T,object>>? OrderByDescExpression { get; }
+        List<Expression<Func<T, object>>> Includes { get; }
+        List<string> IncludeStrings { get; }//for then Include( علشان لو فيه كيان جوه كيان انت عامله include اصلا)
         bool IsDistinct { get; }
         int Take { get; }
         int Skip { get; }

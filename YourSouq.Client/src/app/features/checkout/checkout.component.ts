@@ -25,6 +25,8 @@ import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery
 import { CheckoutReviewComponent } from './checkout-review/checkout-review.component';
 import { CartService } from '../../core/services/cart.service';
 import { CurrencyPipe, JsonPipe } from '@angular/common';
+import { OrderToCreate, ShippingAddress } from '../../shared/models/order';
+import { OrderService } from '../../core/services/order.service';
 
 @Component({
   selector: 'app-checkout',
@@ -48,6 +50,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   private snackbar = inject(SnackbarService);
   private router = inject(Router);
   private accountService = inject(AccountService);
+  private orderService = inject(OrderService);
   cartService = inject(CartService);
   addressElement?: StripeAddressElement;
   paymentElement?: StripePaymentElement;
@@ -121,7 +124,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   async onStepChange(event: StepperSelectionEvent) {
     if (event.selectedIndex === 1) {
       if (this.saveAddress) {
-        const address = await this.getAddressFromStripeAddress();
+        const address = (await this.getAddressFromStripeAddress()) as Address;
         address && firstValueFrom(this.accountService.updateAddress(address));
       }
     }
@@ -140,12 +143,26 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         const result = await this.stripeService.confirmPayment(
           this.ConfirmationToken
         );
-        if (result.error) {
-          throw new Error(result.error.message || 'Error confirming payment');
+
+        if (result.paymentIntent?.status === 'succeeded') {
+          //if payment was successful create the order
+          const order = await this.createOrderModel();
+          const orderResult = await firstValueFrom(
+            this.orderService.createOrder(order)
+          );
+          if (orderResult) {
+            this.cartService.deleteCart(); // Clear the cart after successful payment
+            this.cartService.selectedDelivery.set(null); // Clear the selected delivery method
+            this.router.navigateByUrl('/checkout/success'); // Navigate to success page
+          } else {
+            throw new Error('Failed to create order');
+          }
+        } else if (result.error) {
+          throw new Error(
+            result.error.message || 'Payment confirmation failed'
+          );
         } else {
-          this.cartService.deleteCart(); // Clear the cart after successful payment
-          this.cartService.selectedDelivery.set(null); // Clear the selected delivery method
-          this.router.navigateByUrl('/checkout/success'); // Navigate to success page
+          throw new Error('something went wrong with the payment confirmation');
         }
       }
     } catch (error: any) {
@@ -156,12 +173,38 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async getAddressFromStripeAddress(): Promise<Address | null> {
+  private async createOrderModel(): Promise<OrderToCreate> {
+    const cart = this.cartService.cart();
+    const shippingAddress =
+      (await this.getAddressFromStripeAddress()) as ShippingAddress;
+    const card = this.ConfirmationToken?.payment_method_preview.card;
+
+    if (!cart?.id || !cart.deliveryMethodId || !shippingAddress || !card) {
+      throw new Error('Missing required information to create order');
+    }
+
+    return {
+      cartId: cart.id,
+      paymentSummary: {
+        last4: +card.last4,
+        brand: card.brand,
+        expMonth: card.exp_month,
+        expYear: card.exp_year,
+      },
+      deliveryMethodId: cart.deliveryMethodId,
+      shippingAddress,
+    };
+  }
+
+  private async getAddressFromStripeAddress(): Promise<
+    Address | ShippingAddress | null
+  > {
     const result = await this.addressElement?.getValue();
     const address = result?.value.address;
 
     if (address) {
       return {
+        name: result?.value.name,
         line1: address.line1,
         line2: address.line2 || undefined,
         city: address.city,

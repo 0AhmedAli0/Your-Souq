@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { CartService } from './cart.service';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, of, tap } from 'rxjs';
 import { AccountService } from './account.service';
+import { SignalrService } from './signalr.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ import { AccountService } from './account.service';
 export class InitService {
   private cartService = inject(CartService);
   private accountService = inject(AccountService);
+  private signalrService = inject(SignalrService);
 
   // This service is used to initialize the application
   //app initializer will wait for this service to finish before loading the app so that this function should return an observable
@@ -19,7 +21,14 @@ export class InitService {
     return forkJoin({
       //forkJoin is used to combine multiple observables into one observable and wait for all of them to finish
       cart: cart$,
-      user: this.accountService.getUserInfo(),
+      user: this.accountService.getUserInfo().pipe(
+        //use tap to do side effects without changing the data
+        tap((user) => {
+          if (user) {
+            this.signalrService.CreateHubConnection(); // Create SignalR connection if user is logged in
+          }
+        })
+      ),
     });
   }
 }

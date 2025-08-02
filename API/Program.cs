@@ -1,5 +1,6 @@
 
 using API.Middleware;
+using API.SignalR;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -51,6 +52,7 @@ namespace API
             builder.Services.AddIdentityApiEndpoints<AppUser>()
                 .AddEntityFrameworkStores<StoreContext>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddSignalR();
 
 
             var app = builder.Build();
@@ -68,10 +70,15 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");//this middelWare will check if request comes from "https://localhost:4200"or"https://localhost:5100" if ok then requst pass if not request will refused
-            
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapControllers();
             app.MapGroup("api").MapIdentityApi<AppUser>();//هذه الدالة تضيف مجموعة من نقاط النهاية الجاهزة للتعامل مع عمليات المصادقة وإدارة المستخدمين 
             //app.MapGroup("api") => result of this if we want to access the identity endpoints we should use this /api/account/register
+
+            app.MapHub<NotificationHub>("/hub/notifications");//signalR حتي تعرف الدوت نت الي اين توجه اي طلبات خاصه ب
 
             //Update database and data seeding
             try

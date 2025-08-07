@@ -32,7 +32,6 @@ export class SignalrService {
     // Listen for the 'OrderCompleteNotification' event
     this.hubConnection.on('OrderCompleteNotification', (order: Order) => {
       this.orderSignal.set(order); // Update the signal with the received order
-      console.log('Order complete notification received:', order);
     });
   }
 

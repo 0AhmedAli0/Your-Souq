@@ -38,7 +38,7 @@ namespace API.Controllers
 
         [HttpPost("webhook")]
         public async Task<IActionResult> StripeWebhook()
-        {////stripe listen --forward-to https://localhost:5001/api/payments/webhook -e payment_intent.succeeded
+        {////stripe listen --forward-to https://localhost:5001/api/Payments/webhook -e payment_intent.succeeded
 
             var json = await new StreamReader(Request.Body).ReadToEndAsync();//to get the events that stripe sends to us(from request body)
             try

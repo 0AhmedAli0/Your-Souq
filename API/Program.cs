@@ -74,11 +74,16 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseDefaultFiles();//to serve default files like index.html in wwwroot folder
+            app.UseStaticFiles(); //to serve static files like images, css, js
+
             app.MapControllers();
             app.MapGroup("api").MapIdentityApi<AppUser>();//هذه الدالة تضيف مجموعة من نقاط النهاية الجاهزة للتعامل مع عمليات المصادقة وإدارة المستخدمين 
             //app.MapGroup("api") => result of this if we want to access the identity endpoints we should use this /api/account/register
 
             app.MapHub<NotificationHub>("/hub/notifications");//signalR حتي تعرف الدوت نت الي اين توجه اي طلبات خاصه ب
+
+            app.MapFallbackToController("Index", "Fallback");//this will map any request that not match any controller to Index action in Fallback Controller
 
             //Update database and data seeding
             try

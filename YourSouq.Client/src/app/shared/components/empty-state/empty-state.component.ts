@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -10,4 +10,14 @@ import { BusyService } from '../../../core/services/busy.service';
   templateUrl: './empty-state.component.html',
   styleUrl: './empty-state.component.scss',
 })
-export class EmptyStateComponent {}
+export class EmptyStateComponent {
+  busyService = inject(BusyService);
+  message = input.required<string>();
+  icon = input.required<string>();
+  actionText = input.required<string>();
+  action = output<void>(); // used to emit an action event
+
+  onAction() {
+    this.action.emit();
+  }
+}

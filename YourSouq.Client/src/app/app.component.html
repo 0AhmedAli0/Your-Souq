@@ -1,5 +1,7 @@
 <app-header></app-header>
 
-<div class="container mt-24">
+<div class="mt-20" [ngClass]="{ container: !isHome }">
   <router-outlet></router-outlet>
 </div>
+
+<app-footer></app-footer>

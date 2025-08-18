@@ -61,6 +61,7 @@ namespace API.Controllers
                 PaymentSummary = orderDto.PaymentSummary,
                 OrderItems = Items,
                 Subtotal = Items.Sum(x=>x.Price * x.Quantity),
+                Discount = orderDto.Discount,
                 PaymentIntentId = cart.PaymentIntentId
             };
 

@@ -12,6 +12,7 @@ namespace Core.Entities
         public List<CartItem> Items { get; set; } = [];
         public int? DeliveryMethodId { get; set; }
         public string? ClientSecret { get; set; }// stripe create this with payment intent , to use it when client wants to pay
-        public string? PaymentIntentId { get; set; } 
+        public string? PaymentIntentId { get; set; }
+        public AppCoupon? Coupon { get; set; }
     }
 }

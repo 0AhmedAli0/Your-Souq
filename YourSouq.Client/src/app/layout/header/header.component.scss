@@ -16,3 +16,9 @@ a {
     color: #f08804;
   }
 }
+
+.bg_blur {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+}

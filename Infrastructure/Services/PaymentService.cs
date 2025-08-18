@@ -22,60 +22,116 @@ namespace Infrastructure.Services
             StripeConfiguration.ApiKey = config["StripeSettings:SecretKey"];
 
             //1-get basket
-            var cart = await cartService.GetCartAsync(cardId);
-            if (cart==null) return null;
+            var cart = await cartService.GetCartAsync(cardId) ?? throw new Exception("Cart unavailable");
 
 
             //2-get delivery cost
-            var shippingPrice = 0m;
-            if (cart.DeliveryMethodId.HasValue)
-            {
-                var deliveryMethod = await unitOfWork.Repository<DeliveryMethod>().GetByIdAsync((int)cart.DeliveryMethodId);
-                if (deliveryMethod == null) return null;
-                shippingPrice = deliveryMethod.Price;
-            }
+            var shippingPrice = await GetShippingPriceAsync(cart) ?? 0; // If no delivery method, shipping price is 0
 
             //3-هنا بظبط السعر لو هو جايلي من الفرونت مش مظبوط
-            foreach (var item in cart.Items)
+            await ValidateCartItemsInCartAsync(cart);
+
+            // Calculate subtotal
+            var subtotal = CalculateSubtotal(cart);
+
+            if (cart.Coupon != null)
             {
-                var product = await unitOfWork.Repository<Core.Entities.Product>().GetByIdAsync(item.ProductId);
-                if (product == null) return null; // If product not found, return null
-                if (item.Price != product.Price)
-                {
-                    item.Price = product.Price;
-                }
+                subtotal = await ApplyDiscountAsync(cart.Coupon, subtotal);
             }
+
+            var total = subtotal + shippingPrice;
 
             //4- create or update payment intent
-            var service = new PaymentIntentService();
-            PaymentIntent? intent = null;
-                //check if payment intent already exists
-            if (string.IsNullOrEmpty(cart.PaymentIntentId))
-            {
-                var options = new PaymentIntentCreateOptions
-                {
-                    Amount = (long)((cart.Items.Sum(i => i.Price * i.Quantity) + shippingPrice) * 100), // Stripe expects amount in cents
-                    Currency = "usd",
-                    PaymentMethodTypes = ["card" ]
+            await CreateUpdatePaymentIntentAsync(cart, total);
 
-                };
-                intent = await service.CreateAsync(options);
-                cart.PaymentIntentId = intent.Id;
-                cart.ClientSecret = intent.ClientSecret;// this is used by the client to communicate  with stripe to cofirm payment
-            }   //update payment intent
-            else 
-            {
-                var options = new PaymentIntentUpdateOptions
-                {
-                    Amount = (long)((cart.Items.Sum(i => i.Price * i.Quantity) + shippingPrice) * 100), // Stripe expects amount in cents
-                };
-                intent = await service.UpdateAsync(cart.PaymentIntentId, options);
-            }
+            
 
             //5- Update cart
             await cartService.SetCartAsync(cart);
             return cart;
 
+        }
+
+        private async Task CreateUpdatePaymentIntentAsync(ShoppingCart cart, long total)
+        {
+            var service = new PaymentIntentService();
+
+            //check if payment intent already exists
+            if (string.IsNullOrEmpty(cart.PaymentIntentId))
+            {
+                var options = new PaymentIntentCreateOptions
+                {
+                    Amount = total, // Stripe expects amount in cents
+                    Currency = "usd",
+                    PaymentMethodTypes = ["card"]
+
+                };
+                var intent = await service.CreateAsync(options);
+                cart.PaymentIntentId = intent.Id;
+                cart.ClientSecret = intent.ClientSecret;// this is used by the client to communicate  with stripe to cofirm payment
+            }  
+            //update payment intent
+            else
+            {
+                var options = new PaymentIntentUpdateOptions
+                {
+                    Amount = total // Stripe expects amount in cents
+                };
+                await service.UpdateAsync(cart.PaymentIntentId, options);
+            }
+        }
+        private async Task<long> ApplyDiscountAsync(AppCoupon appCoupon, long amount)
+        {
+            var couponService = new Stripe.CouponService();
+
+            var coupon = await couponService.GetAsync(appCoupon.CouponId);
+
+            if (coupon.AmountOff.HasValue)
+            {
+                amount -= (long)coupon.AmountOff * 100;
+            }
+
+            if (coupon.PercentOff.HasValue)
+            {
+                var discount = amount * (coupon.PercentOff.Value / 100);
+                amount -= (long)discount;
+            }
+
+            return amount;
+        }
+
+        private long CalculateSubtotal(ShoppingCart cart)
+        {
+            var itemTotal = cart.Items.Sum(x => x.Quantity * x.Price * 100);
+            return (long)itemTotal;
+        }
+
+        private async Task ValidateCartItemsInCartAsync(ShoppingCart cart)
+        {
+            foreach (var item in cart.Items)
+            {
+                var product = await unitOfWork.Repository<Core.Entities.Product>().GetByIdAsync(item.ProductId)
+                    ?? throw new Exception("Problem getting product in cart");
+
+                if (item.Price != product.Price)
+                {
+                    item.Price = product.Price;
+                }
+            }
+        }
+
+        private async Task<long?> GetShippingPriceAsync(ShoppingCart cart)
+        {
+            if (cart.DeliveryMethodId.HasValue)
+            {
+                var deliveryMethod = await unitOfWork.Repository<DeliveryMethod>()
+                    .GetByIdAsync((int)cart.DeliveryMethodId)
+                        ?? throw new Exception("Problem with delivery method");
+
+                return (long)deliveryMethod.Price * 100;
+            }
+
+            return null;
         }
     }
 }

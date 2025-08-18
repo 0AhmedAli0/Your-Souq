@@ -77,7 +77,12 @@ namespace API.Controllers
                 var order = await unitOfWork.Repository<Order>().GetEntityWithSpec(spec)
                     ?? throw new Exception("Order not found");
 
-                if ((long)order.GetTotal() * 100 != intent.AmountReceived)
+                var orderTotalInCents = (long)Math.Round(order.GetTotal() * 100,
+                MidpointRounding.AwayFromZero);// this will round the total to the nearest cent
+                /*MidpointRounding.AwayFromZero - (تحدد استراتيجية التقريب عندما تكون القيمة في المنتصف (مثلاً واحد ونصف.
+                  هنا يتم التقريب بعيدًا عن الصفر (إلى 2 في هذه الحالة).*/
+
+                if (orderTotalInCents != intent.Amount)
                 {
                     order.Status = OrderStatus.PaymentMismatch;
                     logger.LogError("Payment amount does not match order total");

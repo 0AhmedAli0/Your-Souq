@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Pagination } from '../../shared/models/pagination';
 import { product } from '../../shared/models/product';
 import { ShopParams } from '../../shared/models/shopParams';
@@ -13,6 +13,8 @@ export class ShopService {
   private http = inject(HttpClient);
   types: string[] = [];
   brands: string[] = [];
+
+  headerSearchValue = signal(''); //this will be used to store the search value
 
   getProducts(shopParams: ShopParams) {
     let params = new HttpParams(); //this allow to us to build query string

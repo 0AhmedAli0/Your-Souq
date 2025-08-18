@@ -9,6 +9,8 @@ import { CartService } from '../../core/services/cart.service';
 import { AccountService } from '../../core/services/account.service';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
+import { ShopService } from '../../core/services/shop.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
@@ -24,6 +26,7 @@ import { MatDivider } from '@angular/material/divider';
     MatMenu,
     MatDivider,
     MatMenuItem,
+    FormsModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -33,6 +36,8 @@ export class HeaderComponent {
   cartService = inject(CartService);
   accountService = inject(AccountService);
   private router = inject(Router);
+  private shopService = inject(ShopService);
+  searchValue = '';
 
   logout() {
     this.accountService.logout().subscribe({
@@ -41,5 +46,10 @@ export class HeaderComponent {
         this.router.navigateByUrl('/');
       },
     });
+  }
+
+  onSearchChange() {
+    this.shopService.headerSearchValue.set(this.searchValue); //update the search value in the shop service
+    this.router.navigateByUrl('/shop'); //navigate to the shop page to trigger the search
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { ShopService } from '../../core/services/shop.service';
 import { product } from '../../shared/models/product';
 import { ProductItemComponent } from './product-item/product-item.component';
@@ -16,6 +16,7 @@ import { ShopParams } from '../../shared/models/shopParams';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Pagination } from '../../shared/models/pagination';
 import { FormsModule } from '@angular/forms';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-shop',
@@ -30,6 +31,7 @@ import { FormsModule } from '@angular/forms';
     MatMenuTrigger,
     MatPaginator,
     FormsModule,
+    EmptyStateComponent,
   ],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.scss',
@@ -47,14 +49,31 @@ export class ShopComponent implements OnInit {
   shopParams = new ShopParams(); //this will be used to filter the products
   pageSizeOptions = [5, 10, 15, 20]; //this will be used to display the number of items per page
 
+  constructor() {
+    effect(() => {
+      this.shopParams.search = this.shopService.headerSearchValue(); //get the search value from the header service
+      this.onSearchChange();
+    });
+  }
+
   ngOnInit(): void {
-    this.initializeShop();
+    if (this.shopService.headerSearchValue() !== '') {
+      this.shopParams.search = this.shopService.headerSearchValue(); //set the search value from the header service if it exists
+      this.onSearchChange();
+    } else {
+      this.initializeShop();
+    }
   }
 
   initializeShop() {
     this.shopService.getBrands();
     this.shopService.getTypes();
     this.getProducts();
+  }
+
+  resetFilters() {
+    this.shopParams = new ShopParams(); //reset the shopParams to default values
+    this.getProducts(); //call the getProducts function to get the products based on the default values
   }
 
   getProducts() {

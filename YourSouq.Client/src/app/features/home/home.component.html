@@ -1,25 +1,265 @@
-<div class="max-w-screen-2xl mx-auto px-4 mt-20">
-  <div
-    class="flex flex-col items-center py-36 justify-center mt-20 rounded-2xl shadow-xl relative"
-  >
-    <img
-      class="absolute inset-0 w-full h-full object-cover rounded-2xl"
-      src="../images/YourSouq.png"
-      alt="ski resort image"
-    />
-    <div class="flex flex-col p-8 rounded-2xl items-center relative">
-      <h1 class="my-6 font-extrabold text-white text-6xl">Welcome!</h1>
-      <button
-        class="bg-gradient-to-r font-semibold text-4xl px-8 py-4 border-2 border-transparent mt-8"
-        style="
-          background-color: #feebd3;
-          color: #22190f;
-          border-radius: 2.5rem !important;
-        "
-        routerLink="/shop"
-      >
-        SHOP NOW
-      </button>
+<div
+  class="max-w-screen-2xl mx-auto px-4 py-8"
+  style="background-color: aliceblue"
+>
+  <div class="flex items-center flex-row-reverse justify-between p-5 pt-9">
+    <div class="w-5/12 h-2/4 rounded-2xl">
+      <img
+        class="inset-0 w-full h-full object-cover rounded-2xl"
+        src="../images/YourSouq.png"
+        alt="ski resort image"
+      />
+    </div>
+    <div class="flex flex-col items-center relative w-4/12 gap-3">
+      <p class="font-bold text-slate-950 text-6xl w-full">
+        Welcome to <br />
+        <span style="color: #f08804"> your Souq</span>
+      </p>
+
+      <p class="text-gray-600 text-lg my-6">
+        Discover the best products at unbeatable prices. Shop now and enjoy
+        exclusive deals!
+      </p>
+      <div class="w-full">
+        <button
+          class="bg-gradient-to-r font-semibold text-4xl px-8 py-4 border-2 border-transparent transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+          style="
+            background-color: #f08804;
+            border-radius: 1.5rem !important;
+            color: white;
+          "
+          routerLink="/shop"
+        >
+          SHOP NOW
+        </button>
+      </div>
     </div>
   </div>
 </div>
+
+<div class="px-5 pt-10 mt-8">
+  <div class="container mx-auto max-w-6xl">
+    <!-- العنوان الرئيسي -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Shop by Category</h1>
+      <p class="text-gray-600 mt-2">
+        Explore our wide range of products across different categories
+      </p>
+    </div>
+
+    <!-- بطاقات الفئات -->
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    >
+      <!-- الهواتف الذكية -->
+
+      <div
+        class="group w-60 bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <!-- دائرة الأيقونة -->
+        <div
+          class="w-14 h-14 flex items-center justify-center mx-auto rounded-full bg-blue-100"
+        >
+          <span
+            class="material-icons text-blue-600 group-hover:text-orange-500 text-3xl"
+            >smartphone</span
+          >
+        </div>
+
+        <!-- العنوان -->
+        <h2 class="mt-4 text-lg font-semibold text-gray-800">Smart phones</h2>
+
+        <!-- عدد المنتجات -->
+        <p class="mt-2 text-gray-500 text-sm">245 Products</p>
+      </div>
+
+      <!-- أجهزة الكمبيوتر -->
+      <div
+        class="group w-60 bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <!-- دائرة الأيقونة -->
+        <div
+          class="w-14 h-14 flex items-center justify-center mx-auto rounded-full bg-blue-100"
+        >
+          <span
+            class="material-icons text-blue-600 group-hover:text-orange-500 text-3xl"
+            >computer</span
+          >
+        </div>
+
+        <!-- العنوان -->
+        <h2 class="mt-4 text-lg font-semibold text-gray-800">Computers</h2>
+
+        <!-- عدد المنتجات -->
+        <p class="mt-2 text-gray-500 text-sm">245 Products</p>
+      </div>
+
+      <!-- الإكسسوارات -->
+      <div
+        class="group w-60 bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <!-- دائرة الأيقونة -->
+        <div
+          class="w-14 h-14 flex items-center justify-center mx-auto rounded-full bg-blue-100"
+        >
+          <span
+            class="material-icons text-blue-600 group-hover:text-orange-500 text-3xl"
+            >headphones</span
+          >
+        </div>
+
+        <!-- العنوان -->
+        <h2 class="mt-4 text-lg font-semibold text-gray-800">Accessories</h2>
+
+        <!-- عدد المنتجات -->
+        <p class="mt-2 text-gray-500 text-sm">245 Products</p>
+      </div>
+
+      <!-- الساعات الذكية -->
+      <div
+        class="group w-60 bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <!-- دائرة الأيقونة -->
+        <div
+          class="w-14 h-14 flex items-center justify-center mx-auto rounded-full bg-blue-100"
+        >
+          <span
+            class="material-icons text-blue-600 group-hover:text-orange-500 text-3xl"
+            >watch</span
+          >
+        </div>
+        <!-- العنوان -->
+        <h2 class="mt-4 text-lg font-semibold text-gray-800">Smart watches</h2>
+
+        <!-- عدد المنتجات -->
+        <p class="mt-2 text-gray-500 text-sm">245 Products</p>
+      </div>
+
+      <!-- الكاميرات -->
+      <div
+        class="group w-60 bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <!-- دائرة الأيقونة -->
+        <div
+          class="w-14 h-14 flex items-center justify-center mx-auto rounded-full bg-blue-100"
+        >
+          <span
+            class="material-icons text-blue-600 group-hover:text-orange-500 text-3xl"
+            >photo_camera</span
+          >
+        </div>
+
+        <!-- العنوان -->
+        <h2 class="mt-4 text-lg font-semibold text-gray-800">Cameras</h2>
+
+        <!-- عدد المنتجات -->
+        <p class="mt-2 text-gray-500 text-sm">245 Products</p>
+      </div>
+
+      <!-- المنزل والمطبخ -->
+      <div
+        class="group w-60 bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <!-- دائرة الأيقونة -->
+        <div
+          class="w-14 h-14 flex items-center justify-center mx-auto rounded-full bg-blue-100"
+        >
+          <span
+            class="material-icons text-blue-600 group-hover:text-orange-500 text-3xl"
+            >home</span
+          >
+        </div>
+
+        <!-- العنوان -->
+        <h2 class="mt-4 text-lg font-semibold text-gray-800">
+          Home and kitchen
+        </h2>
+
+        <!-- عدد المنتجات -->
+        <p class="mt-2 text-gray-500 text-sm">245 Products</p>
+      </div>
+
+      <!-- الأزياء -->
+      <div
+        class="group w-60 bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <!-- دائرة الأيقونة -->
+        <div
+          class="w-14 h-14 flex items-center justify-center mx-auto rounded-full bg-blue-100"
+        >
+          <span
+            class="material-icons text-blue-600 group-hover:text-orange-500 text-3xl"
+            >checkroom</span
+          >
+        </div>
+
+        <!-- العنوان -->
+        <h2 class="mt-4 text-lg font-semibold text-gray-800">Fashion</h2>
+
+        <!-- عدد المنتجات -->
+        <p class="mt-2 text-gray-500 text-sm">245 Products</p>
+      </div>
+
+      <!-- الألعاب -->
+      <div
+        class="group w-60 bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <!-- دائرة الأيقونة -->
+        <div
+          class="w-14 h-14 flex items-center justify-center mx-auto rounded-full bg-blue-100"
+        >
+          <span
+            class="material-icons text-blue-600 group-hover:text-orange-500 text-3xl"
+            >videogame_asset</span
+          >
+        </div>
+
+        <!-- العنوان -->
+        <h2 class="mt-4 text-lg font-semibold text-gray-800">Games</h2>
+
+        <!-- عدد المنتجات -->
+        <p class="mt-2 text-gray-500 text-sm">245 Products</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section
+  class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-20 px-4 text-center -mb-16 mt-16"
+>
+  <!-- الأيقونة -->
+  <div class="flex items-center justify-center mb-6">
+    <div class="bg-white/20 rounded-full p-4">
+      <span class="material-icons text-white text-4xl">mail</span>
+    </div>
+  </div>
+
+  <!-- العنوان -->
+  <h2 class="text-3xl font-bold mb-3">Stay in the Loop</h2>
+  <p class="text-lg mb-8 max-w-2xl mx-auto">
+    Get exclusive offers, new product updates, and style inspiration delivered
+    to your inbox
+  </p>
+
+  <!-- الفورم -->
+  <form
+    class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto"
+  >
+    <input
+      type="email"
+      placeholder="Enter your email address"
+      class="w-full sm:flex-1 px-4 py-3 rounded-md text-gray-800 focus:outline-none"
+    />
+    <button
+      type="submit"
+      class="bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition"
+    >
+      Subscribe
+    </button>
+  </form>
+
+  <!-- النص السفلي -->
+  <p class="text-sm text-white/80 mt-6">
+    No spam, unsubscribe at any time. We respect your privacy.
+  </p>
+</section>

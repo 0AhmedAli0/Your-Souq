@@ -5,6 +5,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -48,9 +49,12 @@ namespace API
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddSingleton<ICartService, CartService>();
+
             builder.Services.AddAuthentication();
             builder.Services.AddIdentityApiEndpoints<AppUser>()
+                .AddRoles<IdentityRole>()//to configure rolles in application
                 .AddEntityFrameworkStores<StoreContext>();
+
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddSignalR();
             builder.Services.AddScoped<ICouponService, CouponService>();
@@ -95,7 +99,8 @@ namespace API
                 await StoreContext.Database.MigrateAsync();
 
                 //data seeding
-                await StoreContextSeed.SeedAsync(StoreContext);
+                var userManager = ScopeServices.GetRequiredService<UserManager<AppUser>>();
+                await StoreContextSeed.SeedAsync(StoreContext, userManager);
             }
             catch (Exception ex)
             {

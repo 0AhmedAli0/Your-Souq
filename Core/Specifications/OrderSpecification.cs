@@ -29,5 +29,28 @@ namespace Core.Specifications
             AddInclude("DeliveryMethod");
         }
 
+        //this constractor for admin to get all orders with filter
+        public OrderSpecification(OrderSpecParameters specParameters) : base( x=> 
+            string.IsNullOrEmpty(specParameters.Status) || x.Status == ParseStatus(specParameters.Status)
+        )
+        {
+            AddInclude("OrderItems");
+            AddInclude("DeliveryMethod");
+            ApplyPaging(specParameters.pageSize * (specParameters.pageIndex - 1), specParameters.pageSize);
+            AddOrderByDesc(o => o.OrderDate);
+        }
+
+        //this constractor for admin to get secefic order
+        public OrderSpecification(int OrderId) : base(o => o.Id == OrderId)
+        {
+            AddInclude("OrderItems");
+            AddInclude("DeliveryMethod");
+        }
+
+        private static OrderStatus? ParseStatus(string status)
+        {
+            return Enum.TryParse<OrderStatus>(status, true, out var parsedStatus) ? parsedStatus : null;
+        }
+
     }
 }

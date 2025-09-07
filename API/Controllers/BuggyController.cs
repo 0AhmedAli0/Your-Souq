@@ -44,6 +44,20 @@ namespace API.Controllers
             var Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok("Hello " + name + " with the id of " + Id);
         }
-       
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin-secret")]
+        public IActionResult GetAdminSecret()
+        {
+            var name = User.FindFirst(ClaimTypes.Name)?.Value;
+            var Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = User.IsInRole("Admin");
+            var roles = User.FindFirstValue(ClaimTypes.Role);
+            return Ok(new
+            {
+                Id, name, isAdmin, roles
+            });
+        }
+
     }
 }

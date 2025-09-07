@@ -6,18 +6,8 @@ using System.Threading.Tasks;
 
 namespace Core.Specifications
 {
-    public class ProductSpecParameters
+    public class ProductSpecParameters : pagingParams
     {
-		private const int MaxPageSize = 50;
-		public int pageIndex { get; set; } = 1;
-
-		private int PageSize = 6;
-
-		public int pageSize
-        {
-			get => PageSize;
-			set => PageSize = (value > MaxPageSize) ? MaxPageSize : value;
-		}
 
 
 		private List<string> Brands = [];

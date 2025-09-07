@@ -13,7 +13,6 @@ YourSouq is a full-stack e-commerce platform that allows customers to browse pro
 - Secure user authentication and authorization
 - Payment processing
 - Admin and user roles
-- Responsive UI
 
 ## Project Structure
 

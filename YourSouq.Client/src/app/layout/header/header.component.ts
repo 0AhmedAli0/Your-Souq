@@ -11,6 +11,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
 import { ShopService } from '../../core/services/shop.service';
 import { FormsModule } from '@angular/forms';
+import { IsAdminDirective } from '../../shared/directives/is-admin.directive';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +28,7 @@ import { FormsModule } from '@angular/forms';
     MatDivider,
     MatMenuItem,
     FormsModule,
+    IsAdminDirective,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',

@@ -19,7 +19,7 @@
       <a routerLink="/test-error" routerLinkActive="active">Errors</a>
       <a routerLink="/offers" routerLinkActive="active">Offers</a>
       <a routerLink="/Cotact" routerLinkActive="active">Cotact Us</a>
-      <a routerLink="/admin" routerLinkActive="active">Admin</a>
+      <a *appIsAdmin routerLink="/admin" routerLinkActive="active">Admin</a>
     </nav>
     <form
       #searchForm="ngForm"

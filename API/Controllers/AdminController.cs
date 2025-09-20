@@ -36,7 +36,8 @@ namespace API.Controllers
             var spec = new OrderSpecification(id);
             var order = await unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
             if (order == null) return BadRequest("No order with that id");
-            if (order.Status != OrderStatus.Pending) return BadRequest("payment not received for this order");
+            if (order.Status == OrderStatus.Pending)
+                return BadRequest("Payment not received for this order");
 
             var result = await paymentService.RefundPayment(order.PaymentIntentId);
 

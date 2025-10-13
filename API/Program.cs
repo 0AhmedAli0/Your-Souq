@@ -35,6 +35,7 @@ namespace API
                 var configuration = ConfigurationOptions.Parse(connection);
                 return ConnectionMultiplexer.Connect(configuration);
             });
+            builder.Services.AddSingleton<IResponseCacheService, ResponseCacheService>();// use singleton because we need one instance for all app so they can benifit from cache
 
             builder.Services.AddCors(options =>//to make angular project pupllished on another domain(origin) to call this project
             {

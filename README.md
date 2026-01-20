@@ -3,13 +3,14 @@
 YourSouq is a full-stack e-commerce platform that allows customers to browse products, add them to a cart, and make secure payments. The project is built with ASP.NET Core for the backend API and Angular for the frontend client.
 
 ## Live Demos
--credentials :
--email address: admin@test.com
--password: Pa$$w0rd
--Card for test payment :    5555555555554444 for success payment
--                           4242424242424242 for success payment
--                           4000000000009995 for declined payment
-      
+- credentials :
+```
+email address: admin@test.com
+password: Pa$$w0rd
+Card for test payment :    5555555555554444 for success payment
+                           4242424242424242 for success payment
+                           4000000000009995 for declined payment
+```
 [View Live Demo](https://yoursouq.runasp.net/)
 
 ## Features
